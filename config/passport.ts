@@ -1,10 +1,8 @@
-var path = require('path');
-const LocalStrategy = require('passport-local').Strategy;
-const User = require(path.join(__basedir,'app/models/user'));
+import { PassportStatic } from 'passport';
+import { Strategy as LocalStrategy } from 'passport-local';
+import User from '../app/models/user';
 
-// expose this function to our app using module.exports
-module.exports = function (passport) {
-
+export function passportConfig(passport: PassportStatic) {
     // =========================================================================
     // passport session setup
     // =========================================================================
@@ -12,12 +10,12 @@ module.exports = function (passport) {
     // passport needs ability to serialize and unserialize users out of session
 
     // used to serialize the user for the session
-    passport.serializeUser(function (user, done) {
+    passport.serializeUser((user: any, done: any) => {
         done(null, user);
     });
 
     // used to deserialize the user
-    passport.deserializeUser(function (user, done) {
+    passport.deserializeUser((user: any, done: any) => {
         done(null, user);
     });
 
@@ -28,11 +26,11 @@ module.exports = function (passport) {
     // by default, if there was no name, it would just be called 'local'
 
     passport.use(new LocalStrategy({
-            passReqToCallback: true
-        },
-        function (req, username, password, done) {
+        passReqToCallback: true
+    },
+        (req: any, username: string, password: string, done: any) => {
             if (username.toLowerCase() === 'admin' && password === 'burger2018') {
-                let user = new User();
+                const user = new User();
                 user.username = username;
                 user.password = password;
                 user.title = 'admin';

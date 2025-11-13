@@ -1,15 +1,15 @@
-const colors = require('colors');
-const figlet = require('figlet');
-const networkUtils = require('../utils/network');
+import 'colors';
+import figlet from 'figlet';
+import networkUtils from '../utils/network';
 
 const burgerQuizLabel = 'App Burger Quiz';
 const anyIpAddressMessage = `> Application accessible aux adresses suivantes :`;
 const singleIpAddressMessage = `> Application accessible à l'adresse suivante :`;
 
 /**
- * Se charge d'afficher des messages d'informations lorsque le serveur démarre
+ * Displays information messages when the server starts
  */
-const messagesToDisplayWhenServerStart = function (port) {
+const messagesToDisplayWhenServerStart = (port: number): void => {
     console.log(figlet.textSync(burgerQuizLabel));
     console.log();
     console.log(`> Le serveur à démarré sur le port : ` + `${port}`.green);
@@ -21,6 +21,6 @@ const messagesToDisplayWhenServerStart = function (port) {
         const ip = ipAddress[index];
         console.log(`\t- ` + `${ip}:${port}`.underline);
     }
-}
+};
 
-module.exports = { messagesToDisplayWhenServerStart }
+export = { messagesToDisplayWhenServerStart };

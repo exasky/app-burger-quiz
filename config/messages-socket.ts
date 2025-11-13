@@ -1,12 +1,13 @@
-module.exports = Object.freeze({
+// Socket.io messages
+export = Object.freeze({
     /**
-     * Messages de base de socket.io
+     * Basic socket.io messages
      */
     messageConnection: 'connection',
     messageDisconnected: 'disconnect',
     /**
-     * Message de la télécommand admin
-     * Pour intérargir avec le jeu
+     * Admin remote control messages
+     * To interact with the game
      */
     messageAdd: 'add',
     messageReloadPart: 'event-reload-part',
@@ -15,15 +16,15 @@ module.exports = Object.freeze({
     messageLockBuzz: 'event-lock-buzz',
     messageUnLockBuzz: 'event-unlock-buzz',
     messageNextTransition: 'event-next-transition',
-    messageBuzzBadResponse :'event-bad-response',
+    messageBuzzBadResponse: 'event-bad-response',
     /**
-     * Les messages que les clients envoies
+     * Messages that clients send
      */
     messageClientSendBuzz: 'on-buzz',
     messageClientsNeedPointsInformations: 'need-information-points',
     messageClientNeedStateBuzzer: 'need-state-buzzer',
     /**
-     * Les messages à envoyer aux clients
+     * Messages to send to clients
      */
     messageToClientReloadPart: 'reload-part',
     messageToClientMayo: 'point-mayo',
@@ -32,7 +33,7 @@ module.exports = Object.freeze({
     messageToClientReceiveBuzz: 'receive-buzz',
     messageToClientLockBuzz: 'receive-lock-buzz',
     messageToClientUnLockBuzz: 'receive-unlock-buzz',
-    messageToClientReceiveStateBuzzer:'receive-state-buzzer',
+    messageToClientReceiveStateBuzzer: 'receive-state-buzzer',
     messageToClientNextTransition: 'receive-next-transition',
     messageToClientReceiveBadResponse: 'receive-buzz-bad-response',
 });

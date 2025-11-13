@@ -1,67 +1,78 @@
-const path = require('path');
+import { Server as SocketIOServer } from 'socket.io';
+import Team from './models/team';
+import Transition from './models/transition';
+import messages from '../config/messages-socket';
 
-module.exports = function (io) {
-    const Team = require(path.join(global.__basedir, 'app/models/team'));
-    const Transition = require(path.join(global.__basedir, 'app/models/transition'));
-    const messages = require(path.join(global.__basedir, 'config/messages-socket'));
+declare global {
+    var __basedir: string;
+}
 
-    var transitionsList = [];
+export function gameConfig(io: SocketIOServer) {
+    let transitionsList: Transition[] = [];
 
     const teamMayo = new Team('mayo');
     const teamKetchup = new Team('ketchup');
+
     /**
-     * Etat du buzzer
+     * Buzzer state
      */
-    var buzzerIsLock = true;
+    let buzzerIsLock = true;
 
     const initGameSocket = function () {
         /**
          * Init Socket
          */
-        io.on(messages.messageConnection, function (socket) {
+        io.on(messages.messageConnection, (socket: any) => {
             /**
-             *  Se produit lors d'une déconnexion utilisateur
+             * Occurs on user disconnection
              */
-            socket.on(messages.messageDisconnected, function () { });
+            socket.on(messages.messageDisconnected, () => { });
+
             /**
-             *  On emet dès que le client se connecte et demande l'info des points
+             * Emits as soon as client connects and requests points info
              */
-            socket.on(messages.messageClientsNeedPointsInformations, function () {
+            socket.on(messages.messageClientsNeedPointsInformations, () => {
                 io.emit(messages.messageToClientReceivePoints, teamMayo.points, teamKetchup.points);
             });
-            socket.on(messages.messageClientNeedStateBuzzer, function () {
+
+            socket.on(messages.messageClientNeedStateBuzzer, () => {
                 io.emit(messages.messageToClientReceiveStateBuzzer, buzzerIsLock);
             });
+
             /**
-             *  Manage les points de la team mayo
+             * Manage Mayo team points
              */
-            socket.on(messages.messageMayoTeam, function (message) {
+            socket.on(messages.messageMayoTeam, (message: string) => {
                 receiveOrderModifyPoints(message, messages.messageToClientMayo, teamMayo);
             });
+
             /**
-             *  Manage les points de la team ketchup
+             * Manage Ketchup team points
              */
-            socket.on(messages.messageKetchupTeam, function (message) {
+            socket.on(messages.messageKetchupTeam, (message: string) => {
                 receiveOrderModifyPoints(message, messages.messageToClientKetchup, teamKetchup);
             });
+
             /**
-             * Se charge de bloquer les buzzers 
+             * Lock the buzzers
              */
-            socket.on(messages.messageLockBuzz, function () {
+            socket.on(messages.messageLockBuzz, () => {
                 buzzerIsLock = true;
-                io.emit(messages.messageToClientLockBuzz)
+                io.emit(messages.messageToClientLockBuzz);
             });
+
             /**
-             * Se charge de débloquer les buzzers 
+             * Unlock the buzzers
              */
-            socket.on(messages.messageUnLockBuzz, function () {
+            socket.on(messages.messageUnLockBuzz, () => {
                 buzzerIsLock = false;
-                io.emit(messages.messageToClientUnLockBuzz)
+                io.emit(messages.messageToClientUnLockBuzz);
             });
+
             /**
-             * Recharge la partie
+             * Reload the game
              */
-            socket.on(messages.messageReloadPart, function () {
+            socket.on(messages.messageReloadPart, () => {
                 buzzerIsLock = true;
                 teamMayo.points = 0;
                 teamKetchup.points = 0;
@@ -69,50 +80,51 @@ module.exports = function (io) {
                 io.emit(messages.messageToClientReloadPart);
                 io.emit(messages.messageToClientReceiveStateBuzzer, buzzerIsLock);
             });
+
             /**
-             * Se produit lorsqu'un client buzz
+             * Occurs when a client buzzes
              */
-            socket.on(messages.messageClientSendBuzz, function (teamName) {
+            socket.on(messages.messageClientSendBuzz, (teamName: string) => {
                 if (buzzerIsLock)
                     return;
                 io.emit(messages.messageToClientReceiveBuzz, teamName);
             });
 
             /**
-             * Se charge d'envoyer la prochaine transition
+             * Send the next transition
              */
-            socket.on(messages.messageNextTransition, function () {
-                var nextTransition = transitionsList.shift();
+            socket.on(messages.messageNextTransition, () => {
+                const nextTransition = transitionsList.shift();
                 if (!nextTransition)
                     return;
                 io.emit(messages.messageToClientNextTransition, nextTransition.filename);
             });
 
             /**
-             * Se charge d'envoyer un message indiquant que l'équipe
-             * A mal répondu à la question
+             * Send a message indicating the team
+             * answered the question incorrectly
              */
-            socket.on(messages.messageBuzzBadResponse, function () {
+            socket.on(messages.messageBuzzBadResponse, () => {
                 io.emit(messages.messageToClientReceiveBadResponse);
             });
 
             /**
-             * Se charge d'ajouter ou de retirer des points
-             * Pour une équipe
+             * Add or remove points
+             * for a team
              */
-            const receiveOrderModifyPoints = function (messageReceive, messageForClient, team) {
+            const receiveOrderModifyPoints = (messageReceive: string, messageForClient: string, team: Team) => {
                 if (messageReceive === messages.messageAdd) {
                     team.incrementPoints();
                 } else {
-                    team.decrementPoints()
+                    team.decrementPoints();
                 }
                 io.emit(messageForClient, team.points);
-            }
+            };
         });
-    }
+    };
 
     /**
-     * Se charge d'initialiser les transitions
+     * Initialize transitions
      */
     const initTransitionList = function () {
         transitionsList = [];
@@ -121,15 +133,15 @@ module.exports = function (io) {
         transitionsList.push(new Transition('menus-transition.mp4', "Les menus", 3));
         transitionsList.push(new Transition('addition-transition.mp4', "L'addition", 4));
         transitionsList.push(new Transition('death-burger-transition.mp4', "Burger de la mort", 5));
-        // Tri sur la propriété ordre de manière asc
-        transitionsList.sort(function (a, b) {
+        // Sort by order property ascending
+        transitionsList.sort((a, b) => {
             return a.order - b.order;
         });
-    }
+    };
 
-    // Init de la socket
+    // Init socket
     initGameSocket();
 
-    // On initialise la liste dès le début
+    // Initialize the list at the beginning
     initTransitionList();
-}
+};

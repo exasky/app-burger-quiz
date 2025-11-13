@@ -1,20 +1,21 @@
-const os = require('os');
+import os from 'os';
 
 /**
- * Se charge de récupérer toutes adresses ip's disponible
+ * Gets all available IP addresses
  */
-const getIpAddressServer = function () {
-    const ipAddress = [];
+const getIpAddressServer = function (): string[] {
+    const ipAddress: string[] = [];
     const ifaces = os.networkInterfaces();
     const keys = Object.keys(ifaces);
     try {
         for (let index = 0; index < keys.length; index++) {
             const ifname = keys[index];
             const interfaces = ifaces[ifname];
+            if (!interfaces) continue;
             for (let i = 0; i < interfaces.length; i++) {
                 const iface = interfaces[i];
                 if ('IPv4' !== iface.family || iface.internal !== false) {
-                    // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+                    // Skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
                     continue;
                 }
                 ipAddress.push(iface.address);
@@ -24,18 +25,15 @@ const getIpAddressServer = function () {
         console.log(error);
     }
     return ipAddress;
-}
+};
 
 /**
- * Vérifie si l'hôte passé en paramètre est une adresse de loopback
- * @param {*} host 
+ * Verifies if the provided host is a loopback address
+ * @param hostname The hostname to check
  */
-const isLocalHostname = function (hostname) {
-    return hostname === "localhost" || hostname === "127.0.0.1";
-}
+const isLocalHostname = (hostname: string): boolean => hostname === "localhost" || hostname === "127.0.0.1";
 
-module.exports = {
+export = {
     getIpAddressServer,
     isLocalHostname
-}
-
+};
