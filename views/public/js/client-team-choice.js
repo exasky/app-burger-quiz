@@ -1,16 +1,16 @@
-$buttonMayo = $('#buzz-button-mayo');
-$buttonKetchup = $('#buzz-button-ketchup');
+const $buttonMayo = $('#buzz-button-mayo');
+const $buttonKetchup = $('#buzz-button-ketchup');
 
-// La base de l'url de redirection
+// Base URL for redirection
 const baseRedirectUrl = '/buzzer';
 
-const initEvents = function () {
-    $buttonMayo.click(function () {
+const initTeamChoiceEvents = () => {
+    $buttonMayo.click(() => {
         location.href = baseRedirectUrl + '?team=team-mayo';
     });
-    $buttonKetchup.click(function () {
+    $buttonKetchup.click(() => {
         location.href = baseRedirectUrl + '?team=team-ketchup';
     });
-}
+};
 
-initEvents();
+initTeamChoiceEvents();
