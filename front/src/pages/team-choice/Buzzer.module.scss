@@ -1,0 +1,27 @@
+.container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .team-logo {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 150px;
+  }
+
+  .buzzer-button {
+    background-color: transparent;
+    border: none;
+
+    &[disabled] {
+      opacity: 0.4;
+    }
+
+    img {
+      max-width: 500px;
+    }
+  }
+}

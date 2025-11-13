@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import http from 'http';
 import path from 'path';
 import flash from 'connect-flash';
@@ -21,7 +22,11 @@ global.__basedir = confServer.rootDir;
 
 const app = express();
 const server = http.createServer(app);
-const io = new SocketIOServer(server);
+const io = new SocketIOServer(server, {
+    cors: {
+        origin: '*',
+    }
+});
 
 app.use(express.static(path.join(confServer.rootDir, '/views/public/')));
 app.use('/qrcode', express.static(path.join(confServer.rootDir, '/node_modules/qrcode/build/')));
@@ -42,6 +47,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
+app.use(cors());
 
 // Passport configuration
 passportConfig(passport);
