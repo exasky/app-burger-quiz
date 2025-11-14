@@ -1,0 +1,64 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "dev",
+      "path": "front",
+      "problemMatcher": [],
+      "label": "npm: dev - front",
+      "detail": "vite",
+      "presentation": {
+        "group": "Dev"
+      }
+    },
+    {
+      "type": "npm",
+      "script": "dev",
+      "path": "back",
+      "problemMatcher": [],
+      "label": "npm: dev - back",
+      "detail": "ts-node server.ts",
+      "presentation": {
+        "group": "Dev"
+      }
+    },
+    {
+      "label": "Run dev env",
+      "dependsOn": ["npm: dev - back", "npm: dev - front"],
+      "presentation": {
+        "group": "Dev"
+      }
+    },
+
+    {
+      "type": "npm",
+      "script": "build",
+      "path": "front",
+      "problemMatcher": [],
+      "label": "npm: build - front",
+      "detail": "tsc -b && vite build",
+      "presentation": {
+        "group": "Build"
+      }
+    },
+    {
+      "type": "npm",
+      "script": "build",
+      "path": "back",
+      "problemMatcher": [],
+      "label": "npm: build - back",
+      "detail": "tsc",
+      "presentation": {
+        "group": "Build"
+      }
+    },
+    {
+      "label": "Build",
+      "dependsOn": ["npm: build - back", "npm: build - front"],
+      "presentation": {
+        "group": "Build"
+      }
+    }
+  ]
+}

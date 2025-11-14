@@ -36,8 +36,14 @@ export function routeConfig(app: Express, passport: PassportStatic) {
     app.get("/game", (req: any, res: any) => {
         const urlToGenerate = urlResolverService.retrieveUrlForQrCodeGeneration(req);
         res.render(basePathViews + "game", {
-            urlToGenerate
+            urlToGenerate: urlToGenerate
         });
+    });
+    app.get("/game/url", (req: any, res: any) => {
+        const urlToGenerate = urlResolverService.retrieveUrlForQrCodeGeneration(req);
+        res.json({
+            url: urlToGenerate
+        })
     });
 
     /** Security */
