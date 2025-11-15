@@ -1,8 +1,10 @@
+import { memo } from 'react';
+
 interface PointElementProps {
   elementId: string;
   activeElementId?: string;
-  index: number;
   active: boolean;
+  height?: number;
 }
 
 function getPointImagePath(elementId: string, active: boolean, activeElementId?: string) {
@@ -15,8 +17,8 @@ function getPointImagePath(elementId: string, active: boolean, activeElementId?:
     : `/burger/empty-${elementId}.png`;
 }
 
-export function PointElement(props: PointElementProps) {
+export const PointElement = memo(function (props: PointElementProps) {
   const pointImage = getPointImagePath(props.elementId, props.active, props.activeElementId);
 
-  return <img data-points={props.index} style={{ color: 'white' }} src={pointImage} />;
-}
+  return <img src={pointImage} />;
+});

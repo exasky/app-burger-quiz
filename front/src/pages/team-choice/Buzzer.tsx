@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import ioMessages from '../../../../common/socket-io/messages-socket';
 import BuzzerImage from '../../assets/buzzer/burger-buzzer.png';
-import KetchupLogo from '../../assets/teams/ketchup.svg';
-import MayoLogo from '../../assets/teams/mayo.svg';
 import { socket } from '../../context/socket';
 import styles from './Buzzer.module.scss';
 
@@ -38,7 +36,7 @@ export default function Buzzer() {
     }
   };
 
-  const teamLogo = searchParams.get('team') === 'team-mayo' ? MayoLogo : KetchupLogo;
+  const teamLogo = searchParams.get('team') === 'team-mayo' ? '/teams/mayo.svg' : '/teams/ketchup.svg';
 
   return (
     <div className={styles['container']}>
